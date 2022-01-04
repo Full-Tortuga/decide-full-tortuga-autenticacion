@@ -346,3 +346,61 @@ class AuthTestCase(APITestCase):
     #     response = self.client.post(
     #         '/authentication/loginLDAP/', body_form, format='json')
     #     self.assertEqual(response.status_code, 400)
+
+class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
+
+    def setUp(self):
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        options = webdriver.ChromeOptions()
+        # options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+    
+    def tearDown(self):
+        self.driver.quit()
+
+    def test_good_redirects_menu(self):
+
+        self.driver.get(f'{self.live_server_url}/authentication/welcome')
+
+        self.driver.find_element_by_id("methodsbutton").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#portfolio')
+        
+        self.driver.find_element_by_id("aboutbutton").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#about')
+
+        self.driver.find_element_by_class_name("navbar-brand").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#page-top')
+
+
+    def test_redirects_signin(self):
+        self.driver.get(f'{self.live_server_url}/authentication/welcome')
+        
+        self.driver.find_element_by_id("signinbutton").click()
+        self.driver.find_element_by_id("ldaplogin").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/loginLDAP_form/')
+        
+        self.driver.execute_script("window.history.go(-1)")
+        self.driver.find_element_by_id("signinbutton").click()
+        self.driver.find_element_by_id("userlogin").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+    def test_redirects_signup(self):
+        self.driver.get(f'{self.live_server_url}/authentication/welcome')
+        self.driver.find_element_by_id("signupbutton").click()
+        self.driver.find_element_by_id("signupuser").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+    def test_logout(self):
+        self.driver.get(f'{self.live_server_url}/authentication/welcome')
+        self.driver.find_element_by_id("signinbutton").click()
+        self.driver.find_element_by_id("userlogin").click()
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+        self.driver.find_element_by_name('username').send_keys("noadmin")
+        self.driver.find_element_by_name('password').send_keys("qwerty",Keys.ENTER)
+        self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
+        
+        self.driver.find_element_by_id("signoffbutton").click()
+        self.assertEqual(self.driver.current_url,f'{self.live_server_url}/authentication/userlogout/')
