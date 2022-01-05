@@ -4,18 +4,16 @@ from rest_framework.test import APITestCase
 
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-
-from base import mods
-from django.test import TestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-
+from selenium.webdriver.chrome.options import Options
 from base.tests import BaseTestCase
+from base import mods
+import time
 
 from local_settings import AUTH_LDAP_SERVER_URI
 
@@ -34,20 +32,8 @@ class AuthTestCase(APITestCase):
         u2.is_superuser = True
         u2.save()
 
-        self.base = BaseTestCase()
-        self.base.setUp()
-
-        options = webdriver.ChromeOptions()
-        options.headless = True
-        self.driver = webdriver.Chrome(options=options)
-        super().setUp()
-
     def tearDown(self):
         self.client = None
-        super().tearDown()
-        self.driver.quit()
-
-        self.base.tearDown()
 
     def test_login(self):
         data = {'username': 'voter1', 'password': '123'}
@@ -353,9 +339,10 @@ class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
         self.base = BaseTestCase()
         self.base.setUp()
 
-        options = webdriver.ChromeOptions()
+        chrome_options = Options()
+        chrome_options.add_argument("--window-size=1920,1080")
         # options.headless = True
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(chrome_options=chrome_options)
     
     def tearDown(self):
         self.driver.quit()
@@ -363,14 +350,17 @@ class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
     def test_good_redirects_menu(self):
 
         self.driver.get(f'{self.live_server_url}/authentication/welcome')
-
+        time.sleep(2)
         self.driver.find_element_by_id("methodsbutton").click()
+        time.sleep(2)
         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#portfolio')
         
         self.driver.find_element_by_id("aboutbutton").click()
+        time.sleep(2)
         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#about')
 
         self.driver.find_element_by_class_name("navbar-brand").click()
+        time.sleep(2)
         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#page-top')
 
 
@@ -392,7 +382,7 @@ class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
         self.driver.find_element_by_id("signupuser").click()
         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
 
-    def test_logout(self):
+    def test_redirects_logout(self):
         self.driver.get(f'{self.live_server_url}/authentication/welcome')
         self.driver.find_element_by_id("signinbutton").click()
         self.driver.find_element_by_id("userlogin").click()
@@ -401,6 +391,5 @@ class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
         self.driver.find_element_by_name('username').send_keys("noadmin")
         self.driver.find_element_by_name('password').send_keys("qwerty",Keys.ENTER)
         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
-        
         self.driver.find_element_by_id("signoffbutton").click()
         self.assertEqual(self.driver.current_url,f'{self.live_server_url}/authentication/userlogout/')
