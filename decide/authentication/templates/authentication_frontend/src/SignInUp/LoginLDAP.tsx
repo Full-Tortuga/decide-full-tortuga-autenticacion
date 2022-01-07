@@ -1,27 +1,20 @@
-import React from 'react';
-import { Button, Form, FormControl, InputGroup } from 'react-bootstrap';
-import { getCookie } from './Utils';
+import React from "react";
+import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
+import { checkErrors } from "./Utils";
 
-//Login Box
-class LoginBox extends React.Component {
+//Register Box 
+class LoginLDAP extends React.Component {
 
   constructor(props: any) {
     super(props);
     this.state = {};
   }
 
-  submitLogin(e: any) {
-    e.preventDefault()
-    console.log(e.target[1].value)
-
-  }
+  submitRegister(e: any) { }
 
   render() {
-    const csrfToken = getCookie('csrftoken') || ''
-    console.log(csrfToken)
     return (
-      <Form method='POST' action='/authentication/login_form/'>
-        <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken} />
+      <Form id='ldap-form' method='POST' action='/authentication/loginLDAP/' onSubmit={checkErrors}>
 
         <InputGroup className="mb-3">
           <InputGroup.Text id="basic-addon3">
@@ -42,13 +35,11 @@ class LoginBox extends React.Component {
         <Button
           type="submit"
           className="login-btn"
-        >Login</Button>
+        >Login with LDAP</Button>
 
       </Form>
-
     );
   }
-
 }
 
-export default LoginBox;
+export default LoginLDAP;  

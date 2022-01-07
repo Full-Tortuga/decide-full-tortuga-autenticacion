@@ -1,22 +1,19 @@
-from django.test import TestCase
+
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
-
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.options import Options
-from base.tests import BaseTestCase
+# from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+# from selenium import webdriver
+# from selenium.webdriver.common.keys import Keys
+# from base.tests import BaseTestCase
+#from selenium.webdriver.support.ui import WebDriverWait
+#from selenium.webdriver.common.by import By
+#from selenium.webdriver.support import expected_conditions as EC
+#from selenium.webdriver.chrome.options import Options
 from base import mods
-import time
 
 from local_settings import AUTH_LDAP_SERVER_URI
-
 
 class AuthTestCase(APITestCase):
 
@@ -333,12 +330,11 @@ class AuthTestCase(APITestCase):
     #         '/authentication/loginLDAP/', body_form, format='json')
     #     self.assertEqual(response.status_code, 400)
 
+    
 # class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
-
 #     def setUp(self):
 #         self.base = BaseTestCase()
 #         self.base.setUp()
-
 #         chrome_options = Options()
 #         chrome_options.add_argument("--window-size=1920,1080")
 #         # options.headless = True
@@ -393,3 +389,44 @@ class AuthTestCase(APITestCase):
 #         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
 #         self.driver.find_element_by_id("signoffbutton").click()
 #         self.assertEqual(self.driver.current_url,f'{self.live_server_url}/authentication/userlogout/')
+
+
+# class SeleniumTestCase(StaticLiveServerTestCase):
+#     def setUp(self):
+#         self.base = BaseTestCase()
+#         self.base.setUp()
+
+#         options = webdriver.ChromeOptions()
+#         options.add_argument("--no-sandbox")
+#         options.add_argument("--disable-dev-shm-usage")
+#         options.add_argument("--headless")
+#         self.driver = webdriver.Chrome(options=options)
+#         super().setUp()            
+            
+#     def tearDown(self):
+#         super().tearDown()
+#         self.driver.close()
+#         self.driver.quit()
+#         self.base.tearDown()
+
+#     def test_register_user(self):
+#         self.driver.get(f'{self.live_server_url}/authentication/login_form/')
+#         self.driver.find_elements_by_class_name("controller")[1].click()
+
+#         self.driver.find_element_by_name('username').send_keys("userUser")
+#         self.driver.find_element_by_name('password').send_keys("asd123")
+#         self.driver.find_element_by_name('password2').send_keys("asd123",Keys.ENTER)
+
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+#         self.driver.find_element_by_name('username').send_keys("userUser")
+#         self.driver.find_element_by_name('password').send_keys("asd123",Keys.ENTER)
+        
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
+
+#     def test_login_success(self):                    
+#         self.driver.get(f'{self.live_server_url}/authentication/login_form/')
+#         self.driver.find_element_by_name('username').send_keys("noadmin")
+#         self.driver.find_element_by_name('password').send_keys("qwerty",Keys.ENTER)
+        
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
