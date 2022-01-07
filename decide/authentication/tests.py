@@ -1,12 +1,14 @@
-
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-# from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-# from selenium import webdriver
-# from selenium.webdriver.common.keys import Keys
-# from base.tests import BaseTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from base.tests import BaseTestCase
 from base import mods
 
 from local_settings import AUTH_LDAP_SERVER_URI
@@ -361,3 +363,42 @@ class AuthTestCase(APITestCase):
 #         self.driver.find_element_by_name('password').send_keys("qwerty",Keys.ENTER)
         
 #         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
+
+class TestTestpositive(StaticLiveServerTestCase):
+    def setUp(self):
+        #Load base test functionality for decide
+        self.base = BaseTestCase()
+        self.base.setUp()
+
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        self.driver = webdriver.Chrome(options=options)
+
+        super().setUp()            
+            
+    def tearDown(self):           
+        super().tearDown()
+        self.driver.quit()
+
+        self.base.tearDown()
+
+  
+    def test_ldap_positive(self):
+        self.driver.get("http://localhost:8000/authentication/login_form/")
+        self.driver.find_element(By.NAME, "username").send_keys("foobar")
+        self.driver.find_element(By.NAME, "password").send_keys("test")
+        self.driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
+
+        #Si el usuario inicia sesion de manera exitosa se muestra Welcome usuario en la esquina superior derecha
+        self.assertTrue(self.driver.find_element_by_xpath('/html/body/nav/div/div/ul[3]'))
+        self.assertTrue(self.driver.find_element_by_xpath('/html/body/nav/div/div/ul[3]/ul/li[2]/a').get_attribute('innerHTML')=="Welcome foo")
+
+    def test_ldap_negative(self):
+        self.driver.get("http://localhost:8000/authentication/login_form/")
+        self.driver.find_element(By.NAME, "username").send_keys("foobar")
+        self.driver.find_element(By.NAME, "password").send_keys("contrasenyaMAl")
+        self.driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
+
+        #Si el usuario inicia sesion de manera exitosa no se muestra Welcome usuario en la esquina superior derecha
+        self.assertRaises(NoSuchElementException, self.driver.find_element_by_xpath, '/html/body/nav/div/div/ul[3]')
+        
