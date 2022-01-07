@@ -115,40 +115,17 @@ apt-get install build-essential python3-dev python2.7-dev libldap2-dev libsasl2-
 Abra un nuevo contenedor con el cliente mínimo de open ldap en su equipo, para ello utilice las siguientes instrucciones.
 ```sh
 docker run  -p 389:389 \
-            -d carvilgar1us/decideldap
+            -d carvilgar1us/ldapdecide
 ```
-Para verificar que el contenedor está corriendo correctamente el servicio slapd, pruebe el siguiente
+Esta nueva imagen ya contiene un usuario por defecto con credenciales **username = foobar & password = test**.Para verificar que el contenedor está corriendo correctamente el servicio slapd, pruebe el siguiente
 comando en su máquina HOST.
 ```sh
-ldapsearch -x -b "dc=decide, dc=org" -H ldap://:389 
+docker exec -it <CONTAINER_ID> slapcat
 ```
-La consola debe de devolver:
-\# extended LDIF
-\#
-\# LDAPv3
-\# base <dc=decide, dc=org> with scope subtree
-\# filter: (objectclass=*)
-\# requesting: ALL
-\#
+deberá ver las domain component de decide.org y el miembro foobar ya instanciado.
 
-\# decide.org
-dn: dc=decide,dc=org
-objectClass: top
-objectClass: dcObject
-objectClass: organization
-o:: RGVjaWRlIHBsYXRhZm9ybWEgZGUgdm90byBlbGVjdHLDg8Kzbmljbw==
-dc: decide
-
-\# admin, decide.org
-dn: cn=admin,dc=decide,dc=org
-objectClass: simpleSecurityObject
-objectClass: organizationalRole
-cn: admin
-description: LDAP administrator
-
-Si es lo que usted ha obtenido entonces puede continuar.
-
-## Añadir objetos a la organización
+## (OPCIONAL)Añadir objetos a la organización
+Estos pasos son opcionales ya que la imagen trae un usuario para utilizar los servicios LDAP.
 ### Organitational Units
 A continuación añadiremos las _Organitational Units_(ou) a nuestra organización,para ello cree un fichero con extensión ldif y ejecútelo con privilegios root **En su maquina HOST**.
 ```sh
