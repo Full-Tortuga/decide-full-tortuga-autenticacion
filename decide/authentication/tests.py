@@ -8,7 +8,6 @@ from rest_framework.authtoken.models import Token
 # from selenium.webdriver.common.action_chains import ActionChains
 # from selenium import webdriver
 # from selenium.webdriver.common.keys import Keys
-from base.tests import BaseTestCase
 from base import mods
 
 class AuthTestCase(APITestCase):

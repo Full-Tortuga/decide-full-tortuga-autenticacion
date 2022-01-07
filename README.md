@@ -124,8 +124,8 @@ docker exec -it <CONTAINER_ID> slapcat
 ```
 deberá ver las domain component de decide.org y el miembro foobar ya instanciado.
 
-## (OPCIONAL)Añadir objetos a la organización
-Estos pasos son opcionales ya que la imagen trae un usuario para utilizar los servicios LDAP.
+## Añadir objetos a la organización
+Estos pasos son **OPCIONALES** ya que la imagen trae un usuario para utilizar los servicios LDAP.
 ### Organitational Units
 A continuación añadiremos las _Organitational Units_(ou) a nuestra organización,para ello cree un fichero con extensión ldif y ejecútelo con privilegios root **En su maquina HOST**.
 ```sh
