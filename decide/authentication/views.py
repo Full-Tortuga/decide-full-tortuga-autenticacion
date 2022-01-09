@@ -13,7 +13,6 @@ from rest_framework.status import (
 )
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -94,8 +93,7 @@ class LDAPLogin(APIView):
                                         password=request.data['password'])
                 login(request, user_obj, backend='django_auth_ldap.backend.LDAPBackend')
                 
-                #Añadir token al sesion para poder votar, en otro caso el votar 
-                #con un usuario registrado con ldap resulta en un panic
+                #Añadir token al sesion para poder votar, en otro caso el votar con un usuario registrado con ldap resulta en un panic
                 if user_obj and request.content_type == 'application/x-www-form-urlencoded':
                     user_data = {
                         'username': request.data['username'],
@@ -104,13 +102,10 @@ class LDAPLogin(APIView):
                     token = mods.post('authentication', entry_point='/login/', json=user_data)
                     request.session['auth-token'] = token['token']
 
-                response = Response({'detail': 'User logged in successfully'}, status=HTTP_200_OK)
                 return render(request, 'welcome.html', status=HTTP_200_OK)
             except AttributeError:
-                response = Response({'detail': 'Credenciales mal'}, status=HTTP_400_BAD_REQUEST)
                 return render(request, 'welcome.html', status=HTTP_400_BAD_REQUEST)
         except ldap.SERVER_DOWN:
-            response = Response({'detail': 'Problema con el servicio LDAP'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
             return render(request, 'welcome.html', status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
