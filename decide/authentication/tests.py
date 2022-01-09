@@ -3,10 +3,14 @@ from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-# from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 # from selenium import webdriver
 # from selenium.webdriver.common.keys import Keys
 # from base.tests import BaseTestCase
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.chrome.options import Options
+# from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from base import mods
 
 from local_settings import AUTH_LDAP_SERVER_URI
@@ -325,6 +329,59 @@ class AuthTestCase(APITestCase):
     #     self.assertEqual(response.status_code, 400)
 
 
+# class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
+#     def setUp(self):
+#         self.base = BaseTestCase()
+#         self.base.setUp()
+#         chrome_options = Options()
+#         chrome_options.add_argument("--window-size=1920,1080")
+#         chrome_options.headless = True
+#         self.driver = webdriver.Chrome(chrome_options=chrome_options)
+
+#     def tearDown(self):
+#         self.driver.quit()
+
+#     def test_good_redirects_menu(self):
+
+#         self.driver.get(f'{self.live_server_url}/authentication/welcome')
+#         self.driver.find_element_by_id("methodsbutton").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#portfolio')
+
+#         self.driver.find_element_by_id("aboutbutton").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#about')
+        
+#         self.driver.find_element_by_class_name("navbar-brand").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/welcome/#page-top')
+
+#     def test_redirects_signin(self):
+#         self.driver.get(f'{self.live_server_url}/authentication/welcome')
+
+#         self.driver.find_element_by_id("signinbutton").click()
+#         self.driver.find_element_by_id("ldaplogin").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+#         self.driver.execute_script("window.history.go(-1)")
+#         self.driver.find_element_by_id("signinbutton").click()
+#         self.driver.find_element_by_id("userlogin").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+#     def test_redirects_signup(self):
+#         self.driver.get(f'{self.live_server_url}/authentication/welcome')
+#         self.driver.find_element_by_id("signupbutton").click()
+#         self.driver.find_element_by_id("signupuser").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+#     def test_redirects_logout(self):
+#         self.driver.get(f'{self.live_server_url}/authentication/welcome')
+#         self.driver.find_element_by_id("signinbutton").click()
+#         self.driver.find_element_by_id("userlogin").click()
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/login_form/')
+
+#         self.driver.find_element_by_name('username').send_keys("noadmin")
+#         self.driver.find_element_by_name('password').send_keys("qwerty",Keys.ENTER)
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
+#         self.driver.find_element_by_id("signoffbutton").click()
+#         self.assertEqual(self.driver.current_url,f'{self.live_server_url}/authentication/userlogout/')
 
 # class SeleniumTestCase(StaticLiveServerTestCase):
 
@@ -347,7 +404,7 @@ class AuthTestCase(APITestCase):
 
 #     def test_register_user(self):
 #         self.driver.get(f'{self.live_server_url}/authentication/login_form/')
-#         self.driver.find_elements_by_class_name("controller")[1].click()
+#         self.driver.find_element(By.CSS_SELECTOR, "p:nth-child(4) > .link").click()
 
 #         self.driver.find_element_by_name('username').send_keys("userUser")
 #         self.driver.find_element_by_name('password').send_keys("asd123")
