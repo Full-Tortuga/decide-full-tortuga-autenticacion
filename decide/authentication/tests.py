@@ -1,8 +1,10 @@
-
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
+# from selenium.common.exceptions import NoSuchElementException
+# from selenium.webdriver.common.action_chains import ActionChains
 # from selenium import webdriver
 # from selenium.webdriver.common.keys import Keys
 # from base.tests import BaseTestCase
@@ -12,8 +14,6 @@ from rest_framework.authtoken.models import Token
 # from selenium.webdriver.chrome.options import Options
 # from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from base import mods
-
-from local_settings import AUTH_LDAP_SERVER_URI
 
 class AuthTestCase(APITestCase):
 
@@ -313,22 +313,17 @@ class AuthTestCase(APITestCase):
         self.assertEqual(msg, 'Ya existe este nombre de usuario')
         self.assertEqual(response.status_code, 400)
 
-    #
-    #   TODO: Arreglar tests, estos tests asumen que el sistema ya tiene registrado un usuario 'foobar' en ldap,
-    #   lo cual es erroneo, tiene que registrarse dicho usuario en el setup de los tests
-    #
-    # def test_login_ldap_positive(self):
-    #     body_form = {'username': 'foobar', 'password': 'test'}
-    #     response = self.client.post(
-    #         '/authentication/loginLDAP/', body_form, format='json')
-    #     self.assertEqual(response.status_code, 200)
-    # def test_login_ldap_negative(self):
-    #     body_form = {'username': 'foobar', 'password': 'contrasenyaMal'}
-    #     response = self.client.post(
-    #         '/authentication/loginLDAP/', body_form, format='json')
-    #     self.assertEqual(response.status_code, 400)
+    def test_login_ldap_positive(self):
+        body_form = {'username': 'foobar', 'password': 'test'}
+        response = self.client.post('/authentication/loginLDAP/', body_form, format='json')
+        self.assertEqual(response.status_code, 200)
+       
+    def test_login_ldap_negative(self):
+        body_form = {'username': 'foobar', 'password': 'contrasenyaMal'}
+        response = self.client.post('/authentication/loginLDAP/', body_form, format='json')
+        self.assertEqual(response.status_code, 400)
 
-
+        
 # class SeleniumLandingPageTestCase(StaticLiveServerTestCase):
 #     def setUp(self):
 #         self.base = BaseTestCase()
@@ -421,5 +416,47 @@ class AuthTestCase(APITestCase):
 #         self.driver.get(f'{self.live_server_url}/authentication/login_form/')
 #         self.driver.find_element_by_name('username').send_keys("noadmin")
 #         self.driver.find_element_by_name('password').send_keys("qwerty",Keys.ENTER)
-        
 #         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/bienvenida/')
+
+# class SeleniumLDAPViewTestCase(StaticLiveServerTestCase):
+
+#     def setUp(self):
+#         self.base = BaseTestCase()
+#         self.base.setUp()
+
+#         options = webdriver.ChromeOptions()
+#         options.add_argument("--no-sandbox")
+#         options.add_argument("--disable-dev-shm-usage")
+#         options.add_argument("--headless")
+#         self.driver = webdriver.Chrome(options=options)
+#         super().setUp()            
+            
+#     def tearDown(self):
+#         super().tearDown()
+#         self.driver.close()
+#         self.driver.quit()
+#         self.base.tearDown()
+
+#     def test_login_ldap_positive(self):
+#         self.driver.get(f"{self.live_server_url}/authentication/login_form/")
+#         self.driver.find_element(By.LINK_TEXT, "here").click()
+#         self.driver.find_element(By.NAME, "username").send_keys("foobar")
+#         self.driver.find_element(By.NAME, "password").send_keys("test")
+#         self.driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
+
+#         #Si el usuario inicia sesion de manera exitosa se muestra Welcome usuario en la esquina superior derecha
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/loginLDAP/')
+#         self.assertTrue(self.driver.find_element_by_xpath('/html/body/nav/div/div/ul[3]'))
+#         self.assertTrue(self.driver.find_element_by_xpath('/html/body/nav/div/div/ul[3]/ul/li[2]/a').get_attribute('innerHTML')=="Welcome foo")
+
+#     def test_login_ldap_negative(self):
+#         self.driver.get(f"{self.live_server_url}/authentication/login_form/")
+#         self.driver.find_element(By.LINK_TEXT, "here").click()
+#         self.driver.find_element(By.NAME, "username").send_keys("foobar")
+#         self.driver.find_element(By.NAME, "password").send_keys("contrasenyaMAl")
+#         self.driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
+
+#         #Si el usuario inicia sesion de manera exitosa no se muestra Welcome usuario en la esquina superior derecha (mismo xpath que para el test positivo)
+#         self.assertTrue(self.driver.current_url==f'{self.live_server_url}/authentication/loginLDAP/')
+#         self.assertRaises(NoSuchElementException, self.driver.find_element_by_xpath, '/html/body/nav/div/div/ul[3]')
+

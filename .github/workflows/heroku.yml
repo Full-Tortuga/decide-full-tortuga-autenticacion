@@ -20,7 +20,7 @@ jobs:
         ports:
           - 27017:27017
       ldap-decide:
-        image: 'carvilgar1us/decideldap'
+        image: 'carvilgar1us/ldapdecide'
         ports:
           - 389:389
     steps:
