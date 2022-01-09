@@ -1,6 +1,5 @@
 from base import mods
 
-from django.db.models.fields import EmailField
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.status import (
@@ -23,6 +22,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import TemplateView
+
 
 from .serializers import UserSerializer
 from django.urls import reverse
