@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 # from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 # from selenium.webdriver.common.by import By
+# from base.tests import BaseTestCase
 # from selenium.common.exceptions import NoSuchElementException
 # from selenium.webdriver.common.action_chains import ActionChains
 # from selenium import webdriver
